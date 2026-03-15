@@ -1,0 +1,12 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "glow-cam-inu",
+    "compatibility_date": "2026-03-15",
+    "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application"
+    },
+    "observability": {
+        "enabled": true
+    }
+}
