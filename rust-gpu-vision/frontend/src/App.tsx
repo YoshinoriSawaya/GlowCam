@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useGlowParams } from './hooks/useGlowParams';
 import { useGpuEngine } from './hooks/useGpuEngine';
 import { VideoPreview } from './components/VideoPreview';
@@ -7,6 +7,8 @@ import { ControlPanel } from './components/ControlPanel';
 function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [showControls, setShowControls] = useState(true);
 
   // カスタムフックでロジックを分離
   const { params, paramsRef, updatePatternParam, setParams, resetParams } = useGlowParams();
@@ -21,19 +23,29 @@ function App() {
             {fps} FPS
           </span>
         )}
+        <button
+          onClick={() => setShowControls(!showControls)}
+          style={{ marginLeft: '20px', padding: '6px 12px', background: '#444', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+        >
+          {showControls ? 'Hide Controls' : 'Show Controls'}
+        </button>
       </h2>
 
       <div style={{ display: 'flex', gap: '30px', justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <VideoPreview
           canvasRef={canvasRef}
           videoRef={videoRef}
+          showControls={showControls} // 4. VideoPreviewに状態を渡す
         />
-        <ControlPanel
-          params={params}
-          updatePatternParam={updatePatternParam} // 名前が一致しているか確認
-          setParams={setParams}
-          resetParams={resetParams}
-        />
+
+        {showControls && (
+          <ControlPanel
+            params={params}
+            updatePatternParam={updatePatternParam}
+            setParams={setParams}
+            resetParams={resetParams}
+          />
+        )}
       </div>
     </div>
   );
