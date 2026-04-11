@@ -6,7 +6,8 @@ use wasm_bindgen::prelude::*;
 use web_sys::{HtmlCanvasElement, HtmlVideoElement};
 
 use crate::engine::GpuEngine;
-use crate::params::FilterParams;
+// 修正ポイント: GlowPattern もインポートする
+use crate::params::{FilterParams, GlowPattern};
 use crate::pipeline::FilterPipeline;
 
 /// JSに公開されるメインクラス。毎フレームの処理状態を保持します。
@@ -14,16 +15,13 @@ use crate::pipeline::FilterPipeline;
 pub struct GpuProcessor {
     engine: GpuEngine,
     pipeline: FilterPipeline,
-    frame_count: usize, // ピンポン処理（テクスチャの切り替え）に使うフレームカウンター
+    frame_count: usize,
 }
 
 #[wasm_bindgen]
 impl GpuProcessor {
-    /// 初期化処理。JS側で `await GpuProcessor.create(canvas)` のように呼ばれます。
     pub async fn create(canvas: HtmlCanvasElement) -> Result<GpuProcessor, JsValue> {
-        // 土台の作成
         let engine = GpuEngine::new(canvas).await?;
-        // 描画ロジックの作成
         let pipeline = FilterPipeline::new(&engine.device, &engine.config);
 
         Ok(GpuProcessor {
@@ -33,40 +31,70 @@ impl GpuProcessor {
         })
     }
 
-    /// 毎フレーム呼ばれるメインループ処理。ビデオフレームとパラメータを受け取って描画します。
     pub fn process_frame(&mut self, video: HtmlVideoElement, params_raw: &[f32]) {
         self.frame_count += 1;
 
-        // JSからの配列データをRustの構造体にマッピング
+        // JSからの配列データをRustの新しい構造体にマッピング
         let params = FilterParams {
-            target_h: params_raw[0],
-            target_s: params_raw[1], // 順番を揃えました
-            target_v: params_raw[2],
-            range_h: params_raw[3],
-            range_s: params_raw[4],
-            range_v: params_raw[5],
-            glow_h: params_raw[6],
-            glow_s: params_raw[7],
-            glow_v: params_raw[8],
-            glow_color_blend: params_raw[9], // 新規: 色の寄せ具合
-            glow_intensity: params_raw[10],
-            blur_size: params_raw[11],
-            mode: params_raw[12],
-            decay_rate: params_raw[13],
-            attack_rate: params_raw[14],
-            _pad: 0.0,
+            patterns: [
+                GlowPattern {
+                    target_h: params_raw[0],
+                    target_s: params_raw[1],
+                    target_v: params_raw[2],
+                    range_h: params_raw[3],
+                    range_s: params_raw[4],
+                    range_v: params_raw[5],
+                    glow_h: params_raw[6],
+                    glow_s: params_raw[7],
+                    glow_v: params_raw[8],
+                    glow_color_blend: params_raw[9],
+                    glow_intensity: params_raw[10],
+                    is_active: params_raw[11],
+                },
+                GlowPattern {
+                    target_h: params_raw[12],
+                    target_s: params_raw[13],
+                    target_v: params_raw[14],
+                    range_h: params_raw[15],
+                    range_s: params_raw[16],
+                    range_v: params_raw[17],
+                    glow_h: params_raw[18],
+                    glow_s: params_raw[19],
+                    glow_v: params_raw[20],
+                    glow_color_blend: params_raw[21],
+                    glow_intensity: params_raw[22],
+                    is_active: params_raw[23],
+                },
+                GlowPattern {
+                    target_h: params_raw[24],
+                    target_s: params_raw[25],
+                    target_v: params_raw[26],
+                    range_h: params_raw[27],
+                    range_s: params_raw[28],
+                    range_v: params_raw[29],
+                    glow_h: params_raw[30],
+                    glow_s: params_raw[31],
+                    glow_v: params_raw[32],
+                    glow_color_blend: params_raw[33],
+                    glow_intensity: params_raw[34],
+                    is_active: params_raw[35],
+                },
+            ],
+            blur_size: params_raw[36],
+            mode: params_raw[37],
+            decay_rate: params_raw[38],
+            attack_rate: params_raw[39],
         };
 
-        // 描画先の画面(SurfaceTexture)を取得。最小化時などは失敗するのでスキップ。
         let frame = match self.engine.surface.get_current_texture() {
             Ok(f) => f,
-            Err(_) => return, // 取得失敗時はスキップ
+            Err(_) => return,
         };
+
         let view = frame
             .texture
             .create_view(&wgpu::TextureViewDescriptor::default());
 
-        // パイプラインに具体的な描画指示を丸投げする
         self.pipeline.execute(
             &self.engine.device,
             &self.engine.queue,
@@ -76,7 +104,6 @@ impl GpuProcessor {
             self.frame_count,
         );
 
-        // 完了したフレームを画面に表示
         frame.present();
     }
 }

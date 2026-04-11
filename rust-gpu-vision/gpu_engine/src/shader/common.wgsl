@@ -4,15 +4,29 @@
 
 // JS/Rust側から渡されるパラメータ構造体
 // ※メモリの並び順が完全に一致している必要があります
-struct FilterParams {
-    target_h: f32, target_s: f32, target_v: f32,
-    range_h: f32, range_s: f32, range_v: f32,
-    glow_h: f32, glow_s: f32, glow_v: f32,
+
+// --- 共通定義の更新 ---
+struct GlowPattern {
+    target_h: f32,
+    target_s: f32,
+    target_v: f32,
+    range_h: f32,
+    range_s: f32,
+    range_v: f32,
+    glow_h: f32,
+    glow_s: f32,
+    glow_v: f32,
     glow_color_blend: f32,
-    glow_intensity: f32, blur_size: f32,
+    glow_intensity: f32,
+    is_active: f32,
+}
+
+struct FilterParams {
+    patterns: array<GlowPattern, 3>,
+    blur_size: f32,
     mode: f32,
-    decay_rate: f32, attack_rate: f32,
-    _pad: f32,
+    decay_rate: f32,
+    attack_rate: f32,
 }
 
 // 外部からバインドされるリソース（テクスチャや変数）

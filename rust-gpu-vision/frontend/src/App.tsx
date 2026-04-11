@@ -9,7 +9,7 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // カスタムフックでロジックを分離
-  const { params, paramsRef, updateParam, setParams, resetParams } = useGlowParams();
+  const { params, paramsRef, updatePatternParam, setParams, resetParams } = useGlowParams();
   const { status, fps } = useGpuEngine({ videoRef, canvasRef, paramsRef });
 
   return (
@@ -30,7 +30,7 @@ function App() {
         />
         <ControlPanel
           params={params}
-          updateParam={updateParam}
+          updatePatternParam={updatePatternParam} // 名前が一致しているか確認
           setParams={setParams}
           resetParams={resetParams}
         />

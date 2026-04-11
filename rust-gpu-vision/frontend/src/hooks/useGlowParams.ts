@@ -1,30 +1,35 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-// パラメータの型を厳密に定義（Rust側と一致させる）
+export interface GlowPattern {
+    targetH: number; targetS: number; targetV: number; rangeH: number;
+    rangeS: number; rangeV: number; glowH: number; glowS: number;
+    glowV: number; glowColorBlend: number; glowIntensity: number;
+    isActive: number; // 0.0=無効, 1.0=有効 (WASMに合わせるためnumber)
+}
+
 export interface GlowParams {
-    targetH: number;
-    targetS: number;
-    targetV: number;
-    rangeH: number;
-    rangeS: number;
-    rangeV: number;
-    glowH: number;         // 追加: 光らせる先の色相
-    glowS: number;         // 追加: 光らせる先の彩度
-    glowV: number;         // 追加: 光らせる先の明度
-    glowColorBlend: number;// 追加: 色の寄せ具合 (0.0=元の色, 1.0=Glow色)
-    glowIntensity: number;
+    patterns: GlowPattern[]; // ここに3要素入れる
     blurSize: number;
     mode: number;
     decayRate: number;
     attackRate: number;
 }
 
-const DEFAULT_PARAMS: GlowParams = {
+const DEFAULT_PATTERN: GlowPattern = {
     targetH: 180, targetS: 0.75, targetV: 0.75,
     rangeH: 45, rangeS: 0.3, rangeV: 0.3,
-    glowH: 180, glowS: 0.75, glowV: 0.75, // 光の色はデフォルトで鮮やかな水色
-    glowColorBlend: 0.5,                    // デフォルトは元の色を維持 (0.0)
+    glowH: 180, glowS: 0.75, glowV: 0.75,
+    glowColorBlend: 0.5,
     glowIntensity: 5.0,
+    isActive: 1.0, // デフォルトで有効
+};
+
+const DEFAULT_PARAMS: GlowParams = {
+    patterns: [
+        { ...DEFAULT_PATTERN }, // パターン1 (水色系)
+        { ...DEFAULT_PATTERN, targetH: 60, glowH: 60, isActive: 0.0 }, // パターン2 (黄色系・初期無効)
+        { ...DEFAULT_PATTERN, targetH: 300, glowH: 300, isActive: 0.0 }, // パターン3 (紫系・初期無効)
+    ],
     blurSize: 20.0,
     mode: 2,
     decayRate: 0.85,
@@ -40,13 +45,17 @@ export function useGlowParams() {
         paramsRef.current = params;
     }, [params]);
 
-    const updateParam = useCallback((key: keyof GlowParams, value: number) => {
-        setParams(prev => ({ ...prev, [key]: value }));
+    const updatePatternParam = useCallback((index: number, key: keyof GlowPattern, value: number) => {
+        setParams(prev => {
+            const newPatterns = [...prev.patterns];
+            newPatterns[index] = { ...newPatterns[index], [key]: value };
+            return { ...prev, patterns: newPatterns };
+        });
     }, []);
 
     const resetParams = useCallback(() => {
         setParams(DEFAULT_PARAMS);
     }, []);
 
-    return { params, paramsRef, updateParam, resetParams, setParams };
+    return { params, paramsRef, updatePatternParam, resetParams, setParams };
 }

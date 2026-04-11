@@ -1,19 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-// ※ファイルの深さに応じて相対パスを調整してください
+import React, { useState, useRef, useEffect } from 'react';
+import type { GlowParams, GlowPattern } from './useGlowParams';
+
 import init, { GpuProcessor } from "../../../gpu_engine/pkg/gpu_engine";
-// 修正後（type を追加）
-import type { GlowParams } from './useGlowParams';
-// 修正後
-interface UseGpuEngineProps {
+
+
+export interface UseGpuEngineProps {
     videoRef: React.RefObject<HTMLVideoElement | null>;
     canvasRef: React.RefObject<HTMLCanvasElement | null>;
-    paramsRef: React.RefObject<GlowParams>;
+    paramsRef: React.MutableRefObject<GlowParams>;
 }
+
 export function useGpuEngine({ videoRef, canvasRef, paramsRef }: UseGpuEngineProps) {
     const [status, setStatus] = useState("Initializing...");
     const [fps, setFps] = useState(0);
 
-    const processorRef = useRef<GpuProcessor | null>(null);
+    const processorRef = useRef<GpuProcessor | null>(null); // GpuProcessorが正しくimportされれば <GpuProcessor | null> に変更
     const frameCountRef = useRef(0);
     const lastTimeRef = useRef(performance.now());
 
@@ -37,22 +38,38 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef }: UseGpuEnginePro
                     setStatus("Running GPU Pipeline");
 
                     const renderLoop = (time: number) => {
-                        if (active && videoRef.current && processorRef.current) {
+                        if (active && videoRef.current && processorRef.current && paramsRef.current) {
                             const p = paramsRef.current;
-                            // ！！！ここが最重要！！！
-                            // Rustの FilterParams 構造体と全く同じ順番・同じサイズにする必要があります
-                            const floatParams = new Float32Array([
-                                p.targetH, p.targetS, p.targetV,
-                                p.rangeH, p.rangeS, p.rangeV,
-                                p.glowH, p.glowS, p.glowV,
-                                p.glowColorBlend,
-                                p.glowIntensity,
+
+                            const floatData: number[] = [];
+
+                            // 1. 各パターンのデータを追加
+                            p.patterns.forEach((pat: GlowPattern) => {
+                                floatData.push(
+                                    pat.targetH, pat.targetS, pat.targetV,
+                                    pat.rangeH, pat.rangeS, pat.rangeV,
+                                    pat.glowH, pat.glowS, pat.glowV,
+                                    pat.glowColorBlend,
+                                    pat.glowIntensity,
+                                    pat.isActive
+                                );
+                            });
+
+                            // 2. 全体設定を追加
+                            floatData.push(
                                 p.blurSize,
                                 p.mode,
                                 p.decayRate,
-                                p.attackRate,
-                                0.0 // 16個のFloat32(64バイト)に揃えるためのパディング
-                            ]);
+                                p.attackRate
+                            );
+
+                            // 3. パディング処理
+                            while (floatData.length % 4 !== 0) {
+                                floatData.push(0.0);
+                            }
+
+                            const floatParams = new Float32Array(floatData);
+
                             processorRef.current.process_frame(videoRef.current, floatParams);
 
                             frameCountRef.current++;

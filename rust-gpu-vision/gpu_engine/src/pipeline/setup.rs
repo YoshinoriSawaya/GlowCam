@@ -80,7 +80,7 @@ impl FilterPipeline {
                     ty: wgpu::BindingType::Buffer {
                         ty: wgpu::BufferBindingType::Uniform,
                         has_dynamic_offset: false,
-                        min_binding_size: wgpu::BufferSize::new(64), // ★ 48 から 64 に変更！
+                        min_binding_size: wgpu::BufferSize::new(160),
                     },
                     count: None,
                 },
