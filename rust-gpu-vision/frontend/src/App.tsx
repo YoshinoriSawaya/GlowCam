@@ -35,7 +35,7 @@ function App() {
         <VideoPreview
           canvasRef={canvasRef}
           videoRef={videoRef}
-          showControls={showControls} // 4. VideoPreviewに状態を渡す
+          showControls={showControls}
         />
 
         {showControls && (
