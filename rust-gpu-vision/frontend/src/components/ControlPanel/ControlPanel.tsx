@@ -29,47 +29,36 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
     const { W, BAR_H, M } = UI_CONSTANTS;
 
     return (
-        <div style={{ background: '#1e1e1e', padding: '25px', borderRadius: '16px', width: '480px', color: 'white' }}>
-
-            {/* --- タブ切り替え --- */}
-            <div style={{ display: 'flex', gap: '5px', marginBottom: '20px' }}>
+        <div className="control-panel">
+            <div className="tabs-container">
                 {params.patterns.map((p, i) => (
                     <button
                         key={i}
                         onClick={() => setTabIndex(i)}
-                        style={{
-                            flex: 1, padding: '10px', borderRadius: '6px', border: 'none',
-                            cursor: 'pointer', fontSize: '12px', fontWeight: 'bold',
-                            background: tabIndex === i ? '#00ff00' : '#333',
-                            color: tabIndex === i ? '#000' : '#aaa',
-                            transition: 'all 0.2s'
-                        }}
+                        className={`tab-button ${tabIndex === i ? 'active' : 'inactive'}`}
                     >
                         PATTERN {i + 1}
-                        <span style={{ fontSize: '9px', display: 'block', opacity: 0.7 }}>
+                        <span className="tab-status">
                             {p.isActive > 0.5 ? "● ON" : "○ OFF"}
                         </span>
                     </button>
                 ))}
             </div>
 
-            {/* --- 有効/無効トグル --- */}
-            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="checkbox-container">
                 <input
                     type="checkbox"
                     checked={isPatternActive}
                     onChange={(e) => updatePattern('isActive', e.target.checked ? 1.0 : 0.0)}
                 />
-                <label style={{ fontSize: '12px' }}>Enable this pattern</label>
+                <label className="checkbox-label">Enable this pattern</label>
             </div>
 
-            {/* --- ピッカー並列エリア --- */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginBottom: '20px', opacity: isPatternActive ? 1 : 0.4 }}>
-
-                {/* 1. Target Detection */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <h3 style={{ color: '#aaa', fontSize: '10px', marginBottom: '8px' }}>1. TARGET DETECTION</h3>
-                    <div style={{ position: 'relative', width: `${W}px` }}>
+            <div className={`pickers-container ${isPatternActive ? '' : 'dimmed'}`}>
+                <div className="picker-column">
+                    <h3 className="picker-title">1. TARGET DETECTION</h3>
+                    {/* Wに依存するためインラインスタイルを残す */}
+                    <div className="target-wrapper" style={{ width: `${W}px` }}>
                         <HsvColorPicker
                             color={{ h: currentPattern.targetH, s: currentPattern.targetS * 100, v: currentPattern.targetV * 100 }}
                             onChange={(color) => {
@@ -83,9 +72,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                     </div>
                 </div>
 
-                {/* 2. Glow Appearance */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <h3 style={{ color: '#aaa', fontSize: '10px', marginBottom: '8px' }}>2. GLOW APPEARANCE</h3>
+                <div className="picker-column">
+                    <h3 className="picker-title">2. GLOW APPEARANCE</h3>
                     <HsvColorPicker
                         color={{ h: currentPattern.glowH, s: currentPattern.glowS * 100, v: currentPattern.glowV * 100 }}
                         onChange={(color) => {
@@ -95,22 +83,21 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                         }}
                         style={{ width: `${W}px`, height: `${W + BAR_H + M}px` }}
                     />
-                    <div style={{ fontSize: '10px', color: '#00ff00', marginTop: '8px', fontFamily: 'monospace' }}>
+                    <div className="rgb-display">
                         {getRgbDisplay(currentPattern.glowH, currentPattern.glowS, currentPattern.glowV)}
                     </div>
                 </div>
             </div>
 
-            <hr style={{ borderColor: '#333', marginBottom: '20px' }} />
+            <hr className="divider" />
 
-            {/* --- パラメータ調整 --- */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '30px', rowGap: '15px' }}>
-                <div style={{ gridColumn: '1 / span 2' }}>
-                    <label style={{ fontSize: '11px', color: '#aaa' }}>Blend Mode</label>
+            <div className="sliders-grid">
+                <div className="blend-mode-wrapper">
+                    <label className="input-label">Blend Mode</label>
                     <select
                         value={params.mode}
                         onChange={(e) => updateGlobal('mode', parseInt(e.target.value))}
-                        style={{ width: '100%', padding: '8px', background: '#2a2a2a', color: '#00ff00', border: '1px solid #444', borderRadius: '6px', fontSize: '12px' }}
+                        className="select-input"
                     >
                         <option value={0}>Glow Dodge</option>
                         <option value={1}>Color Dodge</option>
@@ -120,7 +107,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                     </select>
                 </div>
 
-                {/* ✨ 各パターンのスライダー (Component化でスッキリ！) */}
                 {PATTERN_CONTROLS.map((ctrl) => (
                     <ParameterSlider
                         key={ctrl.key}
@@ -133,7 +119,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                     />
                 ))}
 
-                {/* ✨ 全体設定のスライダー */}
                 {GLOBAL_CONTROLS.map((ctrl) => (
                     <ParameterSlider
                         key={ctrl.key}
@@ -146,7 +131,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                 ))}
             </div>
 
-            <button onClick={resetParams} style={{/* 既存のスタイル */ }}>
+            <button onClick={resetParams} className="reset-button">
                 Reset All
             </button>
         </div>

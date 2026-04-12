@@ -12,7 +12,7 @@ export const TargetOverlay: React.FC<TargetOverlayProps> = ({ pattern }) => {
     const hueSegments = calculateHueSegments(pattern.targetH, pattern.rangeH, W);
 
     return (
-        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'visible' }}>
+        <svg className="target-overlay-svg">
             <defs><clipPath id="svClip"><rect x="0" y="0" width={W} height={SV_H} /></clipPath></defs>
             <rect
                 x={(pattern.targetS - pattern.rangeS) * W}

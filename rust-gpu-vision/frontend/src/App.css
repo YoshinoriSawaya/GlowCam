@@ -1,8 +1,12 @@
+/* App.css */
 #root {
-  max-width: 1280px;
+  width: 100%;
+  max-width: 1920px;
+  /* FHDの最大幅 */
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  /* 画面中央寄せ */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -11,9 +15,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +28,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +46,324 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* =========================================
+   App.tsx
+========================================= */
+.app-container {
+  padding: 20px;
+  color: white;
+  background: #121212;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.app-header {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.engine-status {
+  color: #00ff00;
+}
+
+.fps-badge {
+  margin-left: 15px;
+  background: #333;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #ffcc00;
+  border: 1px solid #665500;
+}
+
+.toggle-button {
+  margin-left: 20px;
+  padding: 6px 12px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.toggle-button:hover {
+  opacity: 0.8;
+}
+
+.main-layout {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.control-panel-wrapper {
+  flex-shrink: 0;
+}
+
+/* =========================================
+   ControlPanel.tsx
+========================================= */
+.control-panel {
+  background: #1e1e1e;
+  padding: 25px;
+  border-radius: 16px;
+  width: 480px;
+  color: white;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.tab-button.active {
+  background: #00ff00;
+  color: #000;
+}
+
+.tab-button.inactive {
+  background: #333;
+  color: #aaa;
+}
+
+.tab-status {
+  font-size: 9px;
+  display: block;
+  opacity: 0.7;
+}
+
+.checkbox-container {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-label {
+  font-size: 12px;
+}
+
+.pickers-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.pickers-container.dimmed {
+  opacity: 0.4;
+}
+
+.picker-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.picker-title {
+  color: #aaa;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.target-wrapper {
+  position: relative;
+}
+
+.rgb-display {
+  font-size: 10px;
+  color: #00ff00;
+  margin-top: 8px;
+  font-family: monospace;
+}
+
+.divider {
+  border-color: #333;
+  margin-bottom: 20px;
+}
+
+.sliders-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 30px;
+  row-gap: 15px;
+}
+
+.blend-mode-wrapper {
+  grid-column: 1 / span 2;
+}
+
+.input-label {
+  font-size: 11px;
+  color: #aaa;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.select-input {
+  width: 100%;
+  padding: 8px;
+  background: #2a2a2a;
+  color: #00ff00;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background 0.2s;
+}
+
+.reset-button:hover {
+  background: #444;
+}
+
+/* =========================================
+   ParameterSlider.tsx
+========================================= */
+.slider-container {
+  transition: opacity 0.3s ease;
+}
+
+.slider-container.dimmed {
+  opacity: 0.4;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.slider-label {
+  font-size: 10px;
+}
+
+.slider-value {
+  font-size: 10px;
+  font-family: monospace;
+}
+
+.slider-input {
+  width: 100%;
+  height: 4px;
+}
+
+/* プライマリーとセカンダリーのスタイル分岐 */
+.slider-primary .slider-label {
+  color: #bbb;
+}
+
+.slider-primary .slider-value {
+  color: #00ff00;
+}
+
+.slider-primary .slider-input {
+  accent-color: #00ff00;
+}
+
+.slider-secondary .slider-label {
+  color: #888;
+}
+
+.slider-secondary .slider-value {
+  color: #888;
+}
+
+.slider-secondary .slider-input {
+  accent-color: #555;
+}
+
+
+/* =========================================
+   TargetOverlay.tsx
+========================================= */
+.target-overlay-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+
+/* =========================================
+   VideoPreview.tsx
+========================================= */
+.video-preview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 300px;
+  transition: max-width 0.8s ease;
+  align-items: center;
+  width: 100%;
+}
+
+.video-preview-container.compact {
+  max-width: 800px;
+}
+
+.video-preview-container.expanded {
+  max-width: 1600px;
+}
+
+.canvas-wrapper {
+  text-align: center;
+  width: 100%;
+}
+
+.preview-title {
+  font-size: 12px;
+  color: #00ff00;
+  margin-bottom: 5px;
+}
+
+.preview-canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  border: 2px solid #00ff00;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.source-video {
+  width: 200px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  align-self: center;
 }
