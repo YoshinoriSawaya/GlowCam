@@ -107,6 +107,58 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ params, updatePatter
                     </select>
                 </div>
 
+                {/* 既存の Blend Mode の隣などに配置 */}
+                <div className="blend-mode-wrapper">
+                    <label className="input-label">Blur Quality</label>
+                    <select
+                        value={params.blurSamples}
+                        onChange={(e) => updateGlobal('blurSamples', parseFloat(e.target.value))}
+                        className="select-input"
+                    >
+                        <option value={4.0}>Low (4 Samples)</option>
+                        <option value={8.0}>Medium (8 Samples)</option>
+                        {/* <option value={2.0}>High (12 Samples)</option> */}
+                    </select>
+                </div>
+
+                <div className="blend-mode-wrapper">
+                    <label className="input-label">Blur Direction</label>
+                    <select
+                        value={params.blurDirection}
+                        onChange={(e) => updateGlobal('blurDirection', parseFloat(e.target.value))}
+                        className="select-input"
+                    >
+                        <option value={0.0}>All Directions</option>
+                        <option value={1.0}>Horizontal</option>
+                        <option value={2.0}>Vertical</option>
+                        <option value={3.0}>Single</option>
+                    </select>
+                </div>
+
+                {/* --- Blur Angle (角度スライダー) --- */}
+                {/* Directionが Custom(3.0) または 横(1.0) / 縦(2.0) の時に調整したい場合に表示 */}
+                <ParameterSlider
+                    label="Blur Angle (deg)"
+                    value={params.blurAngle}
+                    min={0} max={360} step={1}
+                    onChange={(val) => updateGlobal('blurAngle', val)}
+                    variant="secondary"
+                    isActive={params.blurDirection > 0.5} // 全方位(0.0)以外の時に有効化
+                />
+
+                <div className="blend-mode-wrapper">
+                    <label className="input-label">Spread Mode</label>
+                    <select
+                        value={params.decoupleSpread}
+                        onChange={(e) => updateGlobal('decoupleSpread', parseFloat(e.target.value))}
+                        className="select-input"
+                    >
+                        <option value={0.0}>Sync with Decay</option>
+                        <option value={1.0}>Independent</option>
+                    </select>
+                </div>
+
+
                 {PATTERN_CONTROLS.map((ctrl) => (
                     <ParameterSlider
                         key={ctrl.key}

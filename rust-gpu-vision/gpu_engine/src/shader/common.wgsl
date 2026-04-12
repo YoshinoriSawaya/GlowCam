@@ -27,6 +27,10 @@ struct FilterParams {
     mode: f32,
     decay_rate: f32,
     attack_rate: f32,
+    blur_samples: f32,
+    blur_direction: f32,
+    decouple_spread: f32,
+    blur_angle: f32,
 }
 
 // 外部からバインドされるリソース（テクスチャや変数）

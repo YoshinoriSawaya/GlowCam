@@ -13,6 +13,11 @@ export interface GlowParams {
     mode: number;
     decayRate: number;
     attackRate: number;
+    // --- 新規追加 ---
+    blurSamples: number;
+    blurDirection: number;
+    decoupleSpread: number;
+    blurAngle: number; // padding から変更
 }
 
 const DEFAULT_PATTERN: GlowPattern = {
@@ -34,6 +39,11 @@ const DEFAULT_PARAMS: GlowParams = {
     mode: 2,
     decayRate: 0.85,
     attackRate: 0.04,
+
+    blurSamples: 0,
+    blurDirection: 0,
+    decoupleSpread: 0,
+    blurAngle: 0,
 };
 
 export function useGlowParams() {

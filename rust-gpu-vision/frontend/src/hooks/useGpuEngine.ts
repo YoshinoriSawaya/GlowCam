@@ -60,7 +60,12 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef }: UseGpuEnginePro
                                 p.blurSize,
                                 p.mode,
                                 p.decayRate,
-                                p.attackRate
+                                p.attackRate,
+                                // --- 新規パラメータを順番通りに追加 ---
+                                p.blurSamples,
+                                p.blurDirection,
+                                p.decoupleSpread,
+                                p.blurAngle
                             );
 
                             // 3. パディング処理

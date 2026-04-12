@@ -84,6 +84,11 @@ impl GpuProcessor {
             mode: params_raw[37],
             decay_rate: params_raw[38],
             attack_rate: params_raw[39],
+            // ▼ 新規パラメータのマッピング
+            blur_samples: params_raw[40],
+            blur_direction: params_raw[41],
+            decouple_spread: params_raw[42],
+            blur_angle: params_raw[43], // または params_raw[43]
         };
 
         let frame = match self.engine.surface.get_current_texture() {

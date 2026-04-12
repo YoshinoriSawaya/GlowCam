@@ -23,3 +23,8 @@ export const PATTERN_CONTROLS: { label: string; key: keyof GlowPattern; min: num
     { label: 'Sat Range (±)', key: 'rangeS', min: 0, max: 0.5, step: 0.01 },
     { label: 'Val Range (±)', key: 'rangeV', min: 0, max: 0.5, step: 0.01 },
 ];
+
+// 例: 新しいコントロール用
+export const EXTRA_CONTROLS = [
+    { key: 'blurSamples', label: 'Blur Quality', min: 4, max: 16, step: 4 },
+];
