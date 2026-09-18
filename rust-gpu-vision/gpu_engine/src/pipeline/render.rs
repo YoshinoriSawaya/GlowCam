@@ -62,9 +62,12 @@ impl FilterPipeline {
         queue: &wgpu::Queue,
         video: HtmlVideoElement,
     ) -> wgpu::TextureView {
+        // 以前は640x480固定だったが、カメラの実解像度(self.width/height)に合わせる。
+        // ここが実際の映像サイズと食い違うと、copy_external_image_to_texture が
+        // サイズ不一致で失敗し続け、毎フレーム映像が反映されない(黒画面)原因になる。
         let size = wgpu::Extent3d {
-            width: 640,
-            height: 480,
+            width: self.width,
+            height: self.height,
             depth_or_array_layers: 1,
         };
         let texture = device.create_texture(&wgpu::TextureDescriptor {
