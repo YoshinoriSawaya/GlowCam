@@ -5,7 +5,10 @@
 @fragment
 fn fs_accumulate(in: VertexOutput) -> @location(0) vec4<f32> {
     // --- 準備設定 ---
-    let unit = 1.0 / vec2<f32>(640.0, 480.0);
+    // 以前は640x480決め打ちだったが、textureDimensions()でバインド中の
+    // カメラテクスチャの実サイズを取得し、どんな解像度・縦横比でも
+    // にじみ(ブラー)の形が歪まないようにする
+    let unit = 1.0 / vec2<f32>(textureDimensions(t_camera));
     let b = params.blur_size;
     let dr = params.decay_rate;
 
