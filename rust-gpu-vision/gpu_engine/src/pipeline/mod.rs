@@ -18,4 +18,8 @@ pub struct FilterPipeline {
     pub(crate) glow_view_a: wgpu::TextureView,
     pub(crate) glow_view_b: wgpu::TextureView,
     pub(crate) sampler: wgpu::Sampler,
+
+    // 処理対象の解像度（カメラ映像の実サイズに合わせて動的に決まる）
+    pub(crate) width: u32,
+    pub(crate) height: u32,
 }
