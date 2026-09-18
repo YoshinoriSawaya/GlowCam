@@ -84,7 +84,8 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
                         width: { exact: CAPTURE_WIDTH },
                         height: { exact: CAPTURE_HEIGHT },
                         facingMode: { ideal: facing },
-                    });
+                    }
+                });
                 
                 streamRef.current = stream;
 
