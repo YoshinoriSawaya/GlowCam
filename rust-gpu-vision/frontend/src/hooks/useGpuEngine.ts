@@ -102,6 +102,10 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
                     canvasRef.current.width = actualWidth;
                     canvasRef.current.height = actualHeight;
 
+                    // CSS側の見た目の縦横比もカメラの実アスペクト比に合わせる
+                    // (以前はCSSで4:3固定だったため、縦長のスマホカメラ映像だと引き伸ばされていた)
+                    canvasRef.current.style.aspectRatio = `${actualWidth} / ${actualHeight}`;
+
                     const processor = await GpuProcessor.create(canvasRef.current);
                     processorRef.current = processor;
                     setStatus("Running GPU Pipeline");
