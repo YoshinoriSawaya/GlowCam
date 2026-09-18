@@ -27,7 +27,9 @@ impl FilterPipeline {
         });
 
         // 過去フレームを保持するためのピンポン用テクスチャを2枚作成
-        let (glow_a, glow_b, view_a, view_b) = Self::create_glow_textures(device);
+        // (サイズは実際のcanvas解像度=configの値に合わせる。以前は640x480固定だった)
+        let (glow_a, glow_b, view_a, view_b) =
+            Self::create_glow_textures(device, config.width, config.height);
 
         Self {
             pipeline_accumulate: Self::create_pipeline(
@@ -50,6 +52,8 @@ impl FilterPipeline {
             glow_view_a: view_a,
             glow_view_b: view_b,
             sampler,
+            width: config.width,
+            height: config.height,
         }
     }
 
@@ -136,6 +140,8 @@ impl FilterPipeline {
     /// 残像（Glow）効果を計算するために、前回の結果を保存しておくテクスチャを2枚生成します。
     fn create_glow_textures(
         device: &wgpu::Device,
+        width: u32,
+        height: u32,
     ) -> (
         wgpu::Texture,
         wgpu::Texture,
@@ -145,8 +151,8 @@ impl FilterPipeline {
         let desc = wgpu::TextureDescriptor {
             label: Some("Glow Texture"),
             size: wgpu::Extent3d {
-                width: 640,
-                height: 480,
+                width,
+                height,
                 depth_or_array_layers: 1,
             },
             mip_level_count: 1,
