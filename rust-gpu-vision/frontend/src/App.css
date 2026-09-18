@@ -63,6 +63,33 @@
   border-bottom: 1px solid #333;
   padding-bottom: 10px;
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.camera-error-banner {
+  background: #3a1f1f;
+  border: 1px solid #663333;
+  color: #ffb3b3;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin: 12px auto;
+  max-width: 600px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.unsupported-panel {
+  max-width: 480px;
+  margin: 60px auto;
+  text-align: center;
+  background: #1e1e1e;
+  padding: 30px;
+  border-radius: 16px;
+  line-height: 1.7;
 }
 
 .engine-status {
@@ -104,7 +131,11 @@
 }
 
 .control-panel-wrapper {
-  flex-shrink: 0;
+  flex: 1 1 320px;
+  max-width: 480px;
+  min-width: 0;
+  /* 幅0が最小値になるようにし、スマホ幅でも横スクロールが発生しないようにする */
+  width: 100%;
 }
 
 /* =========================================
@@ -114,7 +145,9 @@
   background: #1e1e1e;
   padding: 25px;
   border-radius: 16px;
-  width: 480px;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
   color: white;
 }
 
@@ -363,7 +396,42 @@
 
 .source-video {
   width: 200px;
+  max-width: 100%;
   border-radius: 8px;
   border: 1px solid #444;
   align-self: center;
+}
+
+/* =========================================
+   モバイル幅対応 (スマホでの横スクロール防止)
+========================================= */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 12px;
+  }
+
+  .control-panel {
+    padding: 16px;
+  }
+
+  /* カラーピッカー2列(200px×2 + gap)は幅430px前後必要なため、
+     狭い画面では縦積みにして横あふれを防ぐ */
+  .pickers-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sliders-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .blend-mode-wrapper {
+    grid-column: 1;
+  }
+
+  .app-header {
+    font-size: 15px;
+  }
 }
