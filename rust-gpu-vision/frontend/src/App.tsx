@@ -13,7 +13,24 @@ function App() {
 
   // カスタムフックでロジックを分離
   const { params, paramsRef, updatePatternParam, setParams, resetParams } = useGlowParams();
-  const { status, fps } = useGpuEngine({ videoRef, canvasRef, paramsRef });
+  const { status, fps, isSupported, errorMessage, facing, switchCamera } = useGpuEngine({ videoRef, canvasRef, paramsRef });
+
+  // WebGPU非対応ブラウザ向けのフォールバック表示
+  if (!isSupported) {
+    return (
+      <div className="app-container">
+        <div className="unsupported-panel">
+          <h2>このブラウザではGlowCamを実行できません</h2>
+          <p>
+            GlowCamはWebGPUという最新の描画技術を使用していますが、お使いのブラウザ・端末は対応していないようです。
+          </p>
+          <p>
+            最新のGoogle Chrome（Android）、または iOS 17.4以降のSafariでアクセスしてみてください。
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
@@ -25,12 +42,23 @@ function App() {
           </span>
         )}
         <button
+          onClick={switchCamera}
+          className="toggle-button"
+          title="前面・背面カメラを切り替え"
+        >
+          {facing === 'environment' ? '📷 背面' : '🤳 前面'}
+        </button>
+        <button
           onClick={() => setShowControls(!showControls)}
           className="toggle-button"
         >
           {showControls ? 'Hide Controls' : 'Show Controls'}
         </button>
       </h2>
+
+      {errorMessage && (
+        <div className="camera-error-banner">{errorMessage}</div>
+      )}
 
       <div className="main-layout">
         <VideoPreview
