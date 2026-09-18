@@ -48,6 +48,8 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
     // ユーザーに見せる用のエラーメッセージ（カメラ許可エラーなど）
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [facing, setFacing] = useState<CameraFacing>(initialFacing);
+    // 実際にカメラから届いている解像度（動作確認・パフォーマンス調査用に画面表示する）
+    const [resolution, setResolution] = useState<{ width: number; height: number } | null>(null);
 
     const processorRef = useRef<GpuProcessor | null>(null); // GpuProcessorが正しくimportされれば <GpuProcessor | null> に変更
     const frameCountRef = useRef(0);
