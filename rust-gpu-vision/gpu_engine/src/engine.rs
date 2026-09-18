@@ -14,7 +14,9 @@ pub struct GpuEngine {
 
 impl GpuEngine {
     /// HTMLのCanvas要素を受け取り、GPUデバイスを初期化して紐付けます。
-    pub async fn new(canvas: HtmlCanvasElement) -> Result<Self, JsValue> {
+    /// width/height はcanvasの実ピクセルサイズ(=カメラ映像の実解像度)に合わせて
+    /// 呼び出し側(processor.rs)から渡されます。
+    pub async fn new(canvas: HtmlCanvasElement, width: u32, height: u32) -> Result<Self, JsValue> {
         console_error_panic_hook::set_once();
         let instance = wgpu::Instance::default();
         let surface_target = wgpu::SurfaceTarget::Canvas(canvas);
@@ -38,7 +40,8 @@ impl GpuEngine {
             .map_err(|e| JsValue::from_str(&e.to_string()))?;
 
         // 画面のサイズやフォーマット（RGBAなど）を設定
-        let config = surface.get_default_config(&adapter, 640, 480).unwrap();
+        // (以前は640x480に固定していたが、カメラの実解像度に合わせて動的に設定する)
+        let config = surface.get_default_config(&adapter, width, height).unwrap();
         surface.configure(&device, &config);
 
         Ok(Self {
