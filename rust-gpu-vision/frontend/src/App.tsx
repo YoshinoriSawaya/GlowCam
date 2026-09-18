@@ -10,6 +10,9 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [showControls, setShowControls] = useState(true);
+  // 加工前の生カメラ映像を画面に表示するかどうか。
+  // 素顔・部屋の様子などをそのまま映さないよう、デフォルトでは非表示にしておく。
+  const [showRawVideo, setShowRawVideo] = useState(false);
 
   // カスタムフックでロジックを分離
   const { params, paramsRef, updatePatternParam, setParams, resetParams } = useGlowParams();
@@ -59,6 +62,13 @@ function App() {
         >
           {showControls ? 'Hide Controls' : 'Show Controls'}
         </button>
+        <button
+          onClick={() => setShowRawVideo(!showRawVideo)}
+          className="toggle-button"
+          title="加工前の生のカメラ映像を表示/非表示"
+        >
+          {showRawVideo ? '🙈 Hide Raw Camera' : '📹 Show Raw Camera'}
+        </button>
       </h2>
 
       {errorMessage && (
@@ -70,6 +80,7 @@ function App() {
           canvasRef={canvasRef}
           videoRef={videoRef}
           showControls={showControls}
+          showRawVideo={showRawVideo}
         />
 
         {showControls && (
