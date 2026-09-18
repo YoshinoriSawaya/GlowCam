@@ -216,5 +216,5 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
         setFacing(prev => (prev === 'environment' ? 'user' : 'environment'));
     }, []);
 
-    return { status, fps, isSupported, errorMessage, facing, switchCamera };
+    return { status, fps, isSupported, errorMessage, facing, switchCamera, resolution };
 }
