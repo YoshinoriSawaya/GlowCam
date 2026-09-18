@@ -21,7 +21,11 @@ pub struct GpuProcessor {
 #[wasm_bindgen]
 impl GpuProcessor {
     pub async fn create(canvas: HtmlCanvasElement) -> Result<GpuProcessor, JsValue> {
-        let engine = GpuEngine::new(canvas).await?;
+        // canvasの実ピクセルサイズ（呼び出し側でカメラ映像の実解像度に合わせて設定済み）を取得
+        let width = canvas.width();
+        let height = canvas.height();
+
+        let engine = GpuEngine::new(canvas, width, height).await?;
         let pipeline = FilterPipeline::new(&engine.device, &engine.config);
 
         Ok(GpuProcessor {
