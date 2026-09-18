@@ -27,6 +27,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  /* スマホでの意図しない横スクロールを防ぐ保険 */
+  overflow-x: hidden;
 }
 
 h1 {
