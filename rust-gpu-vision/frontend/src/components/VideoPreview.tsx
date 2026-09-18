@@ -4,6 +4,9 @@ interface VideoPreviewProps {
     canvasRef: React.RefObject<HTMLCanvasElement | null>;
     videoRef: React.RefObject<HTMLVideoElement | null>;
     showControls: boolean;
+    // 加工前の生カメラ映像(video要素)を表示するかどうか。
+    // showControlsとは独立させ、デフォルトでは常に非表示(=プライバシー保護)にする。
+    showRawVideo: boolean;
 }
 
 // SafariなどベンダープレフィックスAPIしか無いブラウザ向けの型
@@ -26,7 +29,7 @@ function requestFullscreen(el: HTMLElement) {
     }
 }
 
-export const VideoPreview: React.FC<VideoPreviewProps> = ({ canvasRef, videoRef, showControls }) => {
+export const VideoPreview: React.FC<VideoPreviewProps> = ({ canvasRef, videoRef, showControls, showRawVideo }) => {
     const handleFullscreen = () => {
         if (canvasRef.current) {
             requestFullscreen(canvasRef.current);
@@ -52,10 +55,12 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ canvasRef, videoRef,
                     className="preview-canvas"
                 />
             </div>
+            {/* 生カメラ映像は処理に必要なため要素自体は常に残すが、
+                showRawVideoがtrueの時だけ画面に表示する(デフォルトは非表示=プライバシー保護) */}
             <video
                 ref={videoRef}
                 className="source-video"
-                style={{ display: showControls ? 'block' : 'none' }}
+                style={{ display: showRawVideo ? 'block' : 'none' }}
                 playsInline
                 muted
             />
