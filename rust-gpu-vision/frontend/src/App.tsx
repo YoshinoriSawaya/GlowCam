@@ -13,7 +13,7 @@ function App() {
 
   // カスタムフックでロジックを分離
   const { params, paramsRef, updatePatternParam, setParams, resetParams } = useGlowParams();
-  const { status, fps, isSupported, errorMessage, facing, switchCamera } = useGpuEngine({ videoRef, canvasRef, paramsRef });
+  const { status, fps, isSupported, errorMessage, facing, switchCamera, resolution } = useGpuEngine({ videoRef, canvasRef, paramsRef });
 
   // WebGPU非対応ブラウザ向けのフォールバック表示
   if (!isSupported) {
@@ -39,6 +39,11 @@ function App() {
         {fps > 0 && (
           <span className="fps-badge">
             {fps} FPS
+          </span>
+        )}
+        {resolution && (
+          <span className="fps-badge">
+            {resolution.width}×{resolution.height}
           </span>
         )}
         <button
