@@ -81,22 +81,26 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
                 await init();
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: { exact: CAPTURE_WIDTH },
-                        height: { exact: CAPTURE_HEIGHT },
+                        width: { ideal: CAPTURE_WIDTH },
+                        height: { ideal: CAPTURE_HEIGHT },
                         facingMode: { ideal: facing },
                     }
                 });
-                
                 streamRef.current = stream;
 
                 if (videoRef.current && canvasRef.current && active) {
                     videoRef.current.srcObject = stream;
                     await videoRef.current.play();
 
-                    // wgpu側のsurfaceは640x480固定のため、canvasの実ピクセルサイズを
-                    // 明示的に一致させておく（未指定だとデフォルトの300x150のまま拡大表示され、ぼやける）
-                    canvasRef.current.width = CAPTURE_WIDTH;
-                    canvasRef.current.height = CAPTURE_HEIGHT;
+                    // 実際にカメラから届いた解像度をcanvasに反映する。
+                    // スマホでは指定した解像度通りに来るとは限らず、端末の向き(portrait/landscape)
+                    // によって幅と高さが入れ替わって届くこともあるため、videoWidth/videoHeightという
+                    // 「実測値」を使う（Rust側 GpuProcessor.create もこのcanvasサイズを読んで
+                    // 処理解像度を動的に合わせる）
+                    const actualWidth = videoRef.current.videoWidth || CAPTURE_WIDTH;
+                    const actualHeight = videoRef.current.videoHeight || CAPTURE_HEIGHT;
+                    canvasRef.current.width = actualWidth;
+                    canvasRef.current.height = actualHeight;
 
                     const processor = await GpuProcessor.create(canvasRef.current);
                     processorRef.current = processor;
