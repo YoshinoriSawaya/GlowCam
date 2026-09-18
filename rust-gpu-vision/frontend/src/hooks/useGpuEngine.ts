@@ -81,11 +81,11 @@ export function useGpuEngine({ videoRef, canvasRef, paramsRef, initialFacing = '
                 await init();
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: { ideal: CAPTURE_WIDTH },
-                        height: { ideal: CAPTURE_HEIGHT },
+                        width: { exact: CAPTURE_WIDTH },
+                        height: { exact: CAPTURE_HEIGHT },
                         facingMode: { ideal: facing },
-                    }
-                });
+                    });
+                
                 streamRef.current = stream;
 
                 if (videoRef.current && canvasRef.current && active) {
